@@ -40,11 +40,13 @@ namespace SS14.Client.UI
                 webview.Surface = surface = new SfmlSurface();
                 webview.Source = new Uri("asset://ui/test.html");
 
+                WebCore.Started += (s, e) =>
+                {
+                    UiContext = SynchronizationContext.Current;
+                    onReady.Set();
+                };
+
                 WebCore.Run();
-                //WebCore.Run((s, e) =>
-                //{
-                //    uiContext = SynchronizationContext.Current;
-                //});
             });
             UiThread.Name = "Awesomium Thread";
             UiThread.Start();
@@ -55,13 +57,16 @@ namespace SS14.Client.UI
 
         SfmlSurface surface;
 
-        public Thread UiThread;
-        private SynchronizationContext uiContext;
+        ManualResetEvent onReady = new ManualResetEvent(false);
 
-        public void Resize(int width, int height) // TODO: May want to throttle this to prevent the resource allocation nightmare from occurring for every pixel that the mouse moves while resizing.
+        public Thread UiThread { get; private set; }
+        public SynchronizationContext UiContext { get; private set; }
+
+        // TODO: May want to throttle this to prevent the resource allocation nightmare from occurring for every pixel that the mouse moves while resizing.
+        public void Resize(int width, int height)
         {
-            if (uiContext != null)
-                uiContext.Post(s => webview.Resize(width, height), null);
+            onReady.WaitOne();
+            UiContext.Post(s => webview.Resize(width, height), null);
         }
 
         public void Shutdown()
@@ -72,8 +77,8 @@ namespace SS14.Client.UI
 
         public void Navigate(Uri uri)
         {
-            if (uiContext != null)
-                uiContext.Post(s => webview.Source = uri, null);
+            onReady.WaitOne();
+            UiContext.Post(s => webview.Source = uri, null);
         }
 
         public void Draw()

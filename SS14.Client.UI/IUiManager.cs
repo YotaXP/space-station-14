@@ -10,6 +10,8 @@ namespace SS14.Client.UI
     {
         void Resize(int width, int height);
         void Draw();
+
+        void SetupInput();
         void Shutdown();
     }
 }

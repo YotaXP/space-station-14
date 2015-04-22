@@ -289,6 +289,7 @@ namespace SS14.Client
 
 
             CluwneLib.Go();
+            IoCManager.Resolve<IUiManager>().SetupInput();
             IoCManager.Resolve<IKeyBindingManager>().Initialize();
         }
 

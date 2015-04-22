@@ -10,6 +10,17 @@
 
 @import url(http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300);*/
 
+html, .mousetransparent {
+    cursor: none;
+}
+INPUT, SELECT, BUTTON, .mouseopaque {
+    cursor: auto;
+}
+
+
+
+
+
 
 body {
     color: red;
@@ -20,4 +31,6 @@ div#text {
     left: 20px;
     font-size: 20px;
     position: absolute;
+    cursor: auto;
 }
+

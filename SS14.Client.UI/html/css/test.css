@@ -1,0 +1,23 @@
+﻿
+@font-face {
+  font-family: 'Hussar';
+  src: url('font/HussarBoldWeb.svg#HussarBoldWeb') format('svg');
+}
+/*@font-face {
+  font-family: 'Hussar';
+  src: url('font/HussarBoldWeb.svg#HussarBoldWeb') format('svg');
+}
+
+@import url(http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300);*/
+
+
+body {
+    color: red;
+    font-family: 'Hussar';
+}
+
+div#text {
+    left: 20px;
+    font-size: 20px;
+    position: absolute;
+}

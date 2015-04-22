@@ -16,6 +16,7 @@ using SS14.Shared.Maths;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SS14.Client.UI;
 
 namespace SS14.Client.Services.UserInterface
 {
@@ -510,6 +511,8 @@ namespace SS14.Client.Services.UserInterface
                    CluwneLib.Screen.BlendingMode = BlendingModes.None;
                 */}
             }
+
+            IoCManager.Resolve<IUiManager>().Draw();
 
             if (_console.IsVisible()) _console.Render();
 

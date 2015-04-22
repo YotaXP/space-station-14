@@ -14,6 +14,8 @@ using System;
 using System.Windows.Forms;
 using KeyArgs = SFML.Window.KeyEventArgs;
 
+using SS14.Client.UI;
+
 namespace SS14.Client
 {
     public class GameController 
@@ -81,6 +83,7 @@ namespace SS14.Client
                 CluwneLib.Screen.Display();
             }
             CluwneLib.Terminate();
+            IoCManager.Resolve<IUiManager>().Shutdown();
             Console.WriteLine("Gameloop terminated.");
         }
         #endregion

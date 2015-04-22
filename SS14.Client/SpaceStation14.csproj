@@ -50,6 +50,7 @@
     </NoWarn>
     <PlatformTarget>x86</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
@@ -140,6 +141,10 @@
       <Project>{C61458B0-0000-0000-0000-000000000000}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
       <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\SS14.Client.UI\SS14.Client.UI.csproj">
+      <Project>{9ed928cd-4d8a-4f3d-89be-5eee03480c2e}</Project>
+      <Name>SS14.Client.UI</Name>
     </ProjectReference>
     <ProjectReference Include="..\SS14.Shared\SS14.Shared.csproj">
       <Name>SS14.Shared</Name>

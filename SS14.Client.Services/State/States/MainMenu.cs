@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using SS14.Shared.IoC;
+using SS14.Client.UI;
 
 namespace SS14.Client.Services.State.States
 {
@@ -118,7 +120,7 @@ namespace SS14.Client.Services.State.States
             _btnOptions.Update(0);
             _btnConnect.Update(0);
             _txtConnect.Update(0);
-
+            IoCManager.Resolve<IUiManager>().Resize(_Width, _Height);
         }	
         #endregion
 

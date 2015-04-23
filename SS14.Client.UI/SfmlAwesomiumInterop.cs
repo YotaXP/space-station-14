@@ -139,6 +139,7 @@ namespace SS14.Client.UI
                 case Keyboard.Key.Num7: return VirtualKey.NUM_7;           
                 case Keyboard.Key.Num8: return VirtualKey.NUM_8;           
                 case Keyboard.Key.Num9: return VirtualKey.NUM_9;
+                case Keyboard.Key.Unknown: return VirtualKey.UNKNOWN;
                 default: throw new NotImplementedException(); // Fill these in as we come across them.
             }
         }

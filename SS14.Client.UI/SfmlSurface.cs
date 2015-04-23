@@ -67,7 +67,7 @@ namespace SS14.Client.UI
             else
             {
                 for (int destY = 0, srcY = srcRect.Y; destY < srcRect.Height; ++destY, ++srcY)
-                    Marshal.Copy(srcBuffer + srcRowSpan * srcY, cropped, destY * srcRect.Width * 4, srcRect.Width * 4);
+                    Marshal.Copy(srcBuffer + srcRowSpan * srcY + srcRect.X * 4, cropped, destY * srcRect.Width * 4, srcRect.Width * 4);
             }
 
             changeQueue.Enqueue(() =>

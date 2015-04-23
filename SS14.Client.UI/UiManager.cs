@@ -34,11 +34,11 @@ namespace SS14.Client.UI
 
                 WebCore.Initialize(cfg);
 
-                session = WebCore.CreateWebSession(@".\session", prefs);
+                session = WebCore.CreateWebSession(@"./session", prefs);
                 session.ClearCache();
                 webview = WebCore.CreateWebView((int)size.X, (int)size.Y, session);
 
-                session.AddDataSource("ui", new Awesomium.Core.Data.DirectoryDataSource(@".\html", 2 << 20));
+                session.AddDataSource("ui", new Awesomium.Core.Data.DirectoryDataSource(@"./html", 2 << 20));
 
                 webview.IsTransparent = true;
                 webview.Surface = surface = new SfmlSurface();
@@ -54,16 +54,19 @@ namespace SS14.Client.UI
                 webview.DocumentReady += webview_DocumentReady;
                 webview.FocusView();
 
-                JSObject callbacks = webview.CreateGlobalJavascriptObject("ssCallbacks");
-                callbacks.Bind("focused", false, (s, ev) =>
+                webview.ProcessCreated += (s, e) =>
                 {
-                    HasKeyboardFocus = true;
-                });
-                callbacks.Bind("blurred", false, (s, ev) =>
-                {
-                    HasKeyboardFocus = false;
-                });
-
+                    JSObject callbacks = webview.CreateGlobalJavascriptObject("ssCallbacks");
+                    callbacks.Bind("focused", false, (so, ev) =>
+                    {
+                        HasKeyboardFocus = true;
+                    });
+                    callbacks.Bind("blurred", false, (so, ev) =>
+                    {
+                        HasKeyboardFocus = false;
+                    });
+                };
+                
                 WebCore.Run();
             });
             UiThread.Name = "Awesomium Thread";

@@ -52,8 +52,18 @@ namespace SS14.Client.UI
                 //};
 
                 webview.DocumentReady += webview_DocumentReady;
-
                 webview.FocusView();
+
+                JSObject callbacks = webview.CreateGlobalJavascriptObject("ssCallbacks");
+                callbacks.Bind("focused", false, (s, ev) =>
+                {
+                    HasKeyboardFocus = true;
+                });
+                callbacks.Bind("blurred", false, (s, ev) =>
+                {
+                    HasKeyboardFocus = false;
+                });
+
                 WebCore.Run();
             });
             UiThread.Name = "Awesomium Thread";
@@ -110,47 +120,18 @@ namespace SS14.Client.UI
 
         void webview_DocumentReady(object sender, UrlEventArgs e)
         {
-            JSObject callbacks = webview.ExecuteJavascriptWithResult(@"
-                if (!window.ssCallbacks) {
-                    window.ssCallbacks = {}
+            webview.ExecuteJavascript(@"
+                document.addEventListener('focus', function(e) {
+                    window.ssCallbacks.focused();
+                }, true);
 
-                    document.addEventListener('focus', function(e) {
-                        window.ssCallbacks.focused();
-                    }, true);
-
-                    document.addEventListener('blur', function(e) {
-                        window.ssCallbacks.blurred();
-                    }, true);
-                }
-                window.ssCallbacks;
+                document.addEventListener('blur', function(e) {
+                    window.ssCallbacks.blurred();
+                }, true);
             ");
-            if (callbacks["ready"]) return;
-
-            callbacks.Bind("focused", false, (s, ev) =>
-            {
-                HasKeyboardFocus = true;
-            });
-            callbacks.Bind("blurred", false, (s, ev) =>
-            {
-                HasKeyboardFocus = false;
-            });
-
-            callbacks["ready"] = true;
         }
 
-        private WebKeyboardEvent ConvertKeyEventArgs(KeyEventArgs kea, WebKeyboardEventType type)
-        {
-            var wke = new WebKeyboardEvent();
-            if (kea.Alt) wke.Modifiers |= Modifiers.AltKey;
-            if (kea.Control) wke.Modifiers |= Modifiers.ControlKey;
-            if (kea.Shift) wke.Modifiers |= Modifiers.ShiftKey;
-            if (kea.System) wke.Modifiers |= Modifiers.MetaKey;
-            wke.IsSystemKey = kea.System;
-            wke.NativeKeyCode = (int)kea.Code;
-            wke.Type = type;
-            return wke;
 
-        }
 
         private class Presenter : IWebViewPresenter
         {
@@ -165,7 +146,7 @@ namespace SS14.Client.UI
             public void ShowCursor(CursorType cursor)
             {
                 manager.HasMouseCapture = cursor != CursorType.None;
-                CluwneLib.Screen.SetTitle(cursor.ToString());
+                //CluwneLib.Screen.SetTitle(cursor.ToString());
             }
 
 
@@ -240,7 +221,7 @@ namespace SS14.Client.UI
             if (HasKeyboardFocus && webview != null)
                 webview.BeginInvoke((Action)delegate()
                 {
-                    webview.InjectKeyboardEvent(ConvertKeyEventArgs(e, WebKeyboardEventType.KeyUp));
+                    webview.InjectKeyboardEvent(e.ToWebKeyboardEvent(WebKeyboardEventType.KeyUp));
                 }, null);
             //else
             //    IoCManager.Resolve<IStateManager>().KeyDown(e);
@@ -251,7 +232,7 @@ namespace SS14.Client.UI
             if (HasKeyboardFocus && webview != null)
                 webview.BeginInvoke((Action)delegate()
                 {
-                    webview.InjectKeyboardEvent(ConvertKeyEventArgs(e, WebKeyboardEventType.KeyDown));
+                    webview.InjectKeyboardEvent(e.ToWebKeyboardEvent(WebKeyboardEventType.KeyDown));
                 }, null);
             //else
             //    IoCManager.Resolve<IStateManager>().KeyDown(e);
@@ -272,7 +253,7 @@ namespace SS14.Client.UI
 
         private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (webview != null)
+            if (HasMouseCapture && webview != null)
                 webview.BeginInvoke((Action)delegate()
                 {
                     switch (e.Button)
@@ -293,7 +274,7 @@ namespace SS14.Client.UI
 
         private void OnMouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (webview != null)
+            if (HasMouseCapture && webview != null)
                 webview.BeginInvoke((Action)delegate()
                 {
                     switch (e.Button)
@@ -324,14 +305,23 @@ namespace SS14.Client.UI
 
         private void OnMouseWheel(object sender, MouseWheelEventArgs e)
         {
+            if (HasMouseCapture && webview != null)
+                webview.BeginInvoke((Action)delegate()
+                {
+                    webview.InjectMouseWheel(e.X, e.Y);
+                }, null);
+            //else
+            //  IoCManager.Resolve<IStateManager>().MouseWheelMove(e);
         }
 
         private void OnMouseEnter(object sender, EventArgs e)
         {
+            //IoCManager.Resolve<IStateManager>().MouseEntered(e);
         }
 
         private void OnMouseExit(object sender, EventArgs e)
         {
+            //IoCManager.Resolve<IStateManager>().MouseLeft(e);
         }
 
         #endregion

@@ -512,7 +512,7 @@ namespace SS14.Client.Services.UserInterface
                 */}
             }
 
-            IoCManager.Resolve<IUiManager>().Draw();
+            IoCManager.Resolve<IUiManager>().Draw(CluwneLib.CurrentRenderTarget);
 
             if (_console.IsVisible()) _console.Render();
 

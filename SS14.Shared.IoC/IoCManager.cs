@@ -35,7 +35,6 @@ namespace SS14.Shared.IoC
                 case "SpaceStation14_Server":
                     {
                         ServiceTypes.AddRange(Assembly.LoadFrom("SS14.Server.Services.dll").GetTypes());
-                        ServiceTypes.AddRange(Assembly.LoadFrom("SS14.Client.UI.dll").GetTypes());
                         break;
                     }
             }                 

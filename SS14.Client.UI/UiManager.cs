@@ -1,14 +1,9 @@
 ﻿using Awesomium.Core;
+using SFML.Graphics;
 using SFML.Window;
 using SS14.Client.Graphics;
-using SS14.Client.Interfaces.State;
-using SS14.Shared.IoC;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace SS14.Client.UI
 {
@@ -57,6 +52,7 @@ namespace SS14.Client.UI
                 webview.ProcessCreated += (s, e) =>
                 {
                     JSObject callbacks = webview.CreateGlobalJavascriptObject("ssCallbacks");
+#if __MonoCS__ // Awesomium.Mono has a different signature for whatever reason.
                     callbacks.Bind("focused", false, (so, ev) =>
                     {
                         HasKeyboardFocus = true;
@@ -65,6 +61,18 @@ namespace SS14.Client.UI
                     {
                         HasKeyboardFocus = false;
                     });
+#else
+                    callbacks.Bind("focused", (so, ev) =>
+                    {
+                        HasKeyboardFocus = true;
+                        return JSValue.Undefined;
+                    });
+                    callbacks.Bind("blurred", (so, ev) =>
+                    {
+                        HasKeyboardFocus = false;
+                        return JSValue.Undefined;
+                    });
+#endif
                 };
                 
                 WebCore.Run();
@@ -108,13 +116,13 @@ namespace SS14.Client.UI
                 }, null);
         }
 
-        public void Draw()
+        public void Draw(RenderTarget target)
         {
             if (surface != null)
-                surface.Draw();
+                surface.Draw(target);
         }
 
-        #region Input
+#region Input
 
         private void KillFocus()
         {
@@ -327,6 +335,6 @@ namespace SS14.Client.UI
             //IoCManager.Resolve<IStateManager>().MouseLeft(e);
         }
 
-        #endregion
+#endregion
     }
 }

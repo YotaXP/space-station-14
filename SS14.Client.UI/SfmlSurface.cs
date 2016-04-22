@@ -1,13 +1,9 @@
 ﻿using Awesomium.Core;
 using SFML.Graphics;
-using SS14.Client.Graphics;
-using SS14.Client.Graphics.Render;
-using SS14.Client.Graphics.Shader;
-using SS14.Client.Graphics.Sprite;
+using SFML.System;
 using System;
 using System.Collections.Concurrent;
 using Marshal = System.Runtime.InteropServices.Marshal;
-using SystemColor = System.Drawing.Color;
 
 namespace SS14.Client.UI
 {
@@ -15,7 +11,7 @@ namespace SS14.Client.UI
     {
         // Belonging to main thread.  Hungarian notation to make it more obvious.
         private static Shader mtShader;
-        private RenderImage mtImage;
+        private RenderTexture mtImage;
         private Sprite mtSurfaceSprite;
 
         // Shared
@@ -30,7 +26,7 @@ namespace SS14.Client.UI
             var height = e.View.Height;
             changeQueue.Enqueue(() =>
             {
-                mtImage = new RenderImage((uint)width, (uint)height);
+                mtImage = new RenderTexture((uint)width, (uint)height);
                 mtSurfaceSprite = new Sprite(mtImage.Texture);
             });
 
@@ -45,7 +41,7 @@ namespace SS14.Client.UI
             changeQueue.Enqueue(() =>
             {
                 mtImage.Dispose();
-                mtImage = new RenderImage((uint)e.NewWidth, (uint)e.NewHeight);
+                mtImage = new RenderTexture((uint)e.NewWidth, (uint)e.NewHeight);
                 mtSurfaceSprite.Texture = mtImage.Texture;
             });
 
@@ -79,14 +75,14 @@ namespace SS14.Client.UI
                     using (var fragStream = asm.GetManifestResourceStream(string.Format("{0}.ColorFix.frag", asm.GetName().Name)))
                         fragShader = new System.IO.StreamReader(fragStream).ReadToEnd();
                     mtShader = Shader.FromString(null, fragShader);
-                    mtShader.SetParameter("texture", SFML.Graphics.Shader.CurrentTexture);
+                    mtShader.SetParameter("texture", Shader.CurrentTexture);
                 }
 
                 using (var img = new Image((uint)srcRect.Width, (uint)srcRect.Height, cropped))
                 using (var tex = new Texture(img))
-                using (var sprite = new CluwneSprite(tex))
+                using (var sprite = new Sprite(tex))
                 {
-                    sprite.SetPosition(destRect.X, destRect.Y);
+                    sprite.Position = new Vector2f(destRect.X, destRect.Y);
                     mtImage.Draw(sprite, new RenderStates(BlendMode.None, Transform.Identity, null, mtShader));
                 }
 
@@ -102,21 +98,17 @@ namespace SS14.Client.UI
 
             changeQueue.Enqueue(() =>
             {
-                mtImage.BeginDrawing();
-
-                var src = new IntRect(clipRect.X, clipRect.Y, clipRect.Width, clipRect.Height);
-                var dest = new IntRect(clipRect.X + dx, clipRect.Y + dy, clipRect.Width, clipRect.Height);
-
-                mtImage.Blit(dest, src, SystemColor.White);
-
-                mtImage.EndDrawing();
+                var tf = new Transform();
+                tf.Translate(dx, dy);
+                mtImage.Display();
+                mtSurfaceSprite.Draw(mtImage, new RenderStates(BlendMode.None, tf, null, null));
             });
 
             base.Scroll(dx, dy, clipRect);
         }
 
         // Callable from main thread.
-        public void Draw()
+        public void Draw(RenderTarget target)
         {
             if (this.IsDisposed)
                 return;
@@ -128,7 +120,7 @@ namespace SS14.Client.UI
             if (mtImage != null && mtSurfaceSprite != null)
             {
                 mtImage.Display();
-                mtSurfaceSprite.Draw(CluwneLib.CurrentRenderTarget, RenderStates.Default);
+                mtSurfaceSprite.Draw(target, RenderStates.Default);
             }
         }
 

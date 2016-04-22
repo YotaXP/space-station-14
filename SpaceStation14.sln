@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lidgren.Network", "Lidgren.Network\Lidgren.Network.csproj", "{59250BAF-0000-0000-0000-000000000000}"
 EndProject
@@ -33,6 +33,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SS14.Client.UI", "SS14.Client.UI\SS14.Client.UI.csproj", "{9ED928CD-4D8A-4F3D-89BE-5EEE03480C2E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SS14.UnitTesting", "SS14.UnitTesting\SS14.UnitTesting.csproj", "{F0ADA779-40B8-4F7E-BA6C-CDB19F3065D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -99,6 +100,10 @@ Global
 		{9ED928CD-4D8A-4F3D-89BE-5EEE03480C2E}.Debug|x86.Build.0 = Debug|x86
 		{9ED928CD-4D8A-4F3D-89BE-5EEE03480C2E}.Release|x86.ActiveCfg = Release|x86
 		{9ED928CD-4D8A-4F3D-89BE-5EEE03480C2E}.Release|x86.Build.0 = Release|x86
+		{F0ADA779-40B8-4F7E-BA6C-CDB19F3065D9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F0ADA779-40B8-4F7E-BA6C-CDB19F3065D9}.Debug|x86.Build.0 = Debug|Any CPU
+		{F0ADA779-40B8-4F7E-BA6C-CDB19F3065D9}.Release|x86.ActiveCfg = Release|Any CPU
+		{F0ADA779-40B8-4F7E-BA6C-CDB19F3065D9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
